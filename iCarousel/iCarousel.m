@@ -652,6 +652,7 @@ CVReturn displayLinkCallback(CVDisplayLinkRef displayLink,
             CGFloat arc = [self valueForOption:iCarouselOptionArc withDefault:M_PI * 2.0f];
             CGFloat radius = [self valueForOption:iCarouselOptionRadius withDefault:_itemWidth * spacing * count / arc];
             CGFloat angle = [self valueForOption:iCarouselOptionAngle withDefault:arc / count];
+            CGFloat shouldRotateItem = [self valueForOption:iCarouselOptionRotateItem withDefault:YES];
             
             if (_type == iCarouselTypeInvertedWheel)
             {
@@ -663,7 +664,13 @@ CVReturn displayLinkCallback(CVDisplayLinkRef displayLink,
             {
                 transform = CATransform3DTranslate(transform, -radius, 0.0f, 0.0f);
                 transform = CATransform3DRotate(transform, angle * offset, 0.0f, 0.0f, 1.0f);
-                return CATransform3DTranslate(transform, radius, 0.0f, offset * 0.01f);
+                transform = CATransform3DTranslate(transform, radius, 0.0f, offset * 0.01f);
+                if(shouldRotateItem)
+                {
+                    return transform;
+                }
+                
+                return CATransform3DRotate(transform, -(angle * offset), 0.0f, 0.0f, 1.0f);
             }
             else
             {
