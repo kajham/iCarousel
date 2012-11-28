@@ -68,10 +68,8 @@
 @property (nonatomic, assign) NSTimeInterval startTime;
 @property (nonatomic, assign) CGFloat startVelocity;
 @property (nonatomic, unsafe_unretained) id timer;
-@property (nonatomic, assign) BOOL decelerating;
 @property (nonatomic, assign) CGFloat previousTranslation;
 @property (nonatomic, assign, getter = isWrapEnabled) BOOL wrapEnabled;
-@property (nonatomic, assign) BOOL dragging;
 @property (nonatomic, assign) BOOL didDrag;
 @property (nonatomic, assign) NSTimeInterval toggleTime;
 @property (nonatomic, assign) NSInteger animationDisableCount;
@@ -261,23 +259,23 @@ CVReturn displayLinkCallback(CVDisplayLinkRef displayLink,
         //DEPRECATED: check for legacy delegate method usage
         if ([_delegate respondsToSelector:@selector(carousel:itemAlphaForOffset:)])
         {
-            NSLog(@"Warning: The carousel:itemAlphaForOffset: delegate method is deprecated. Use carousel:valueForOption:withDefault: with iCarouselOptionFadeMin, iCarouselOptionFadeMax and iCarouselOptionFadeRange instead");
+            DLog(@"Warning: The carousel:itemAlphaForOffset: delegate method is deprecated. Use carousel:valueForOption:withDefault: with iCarouselOptionFadeMin, iCarouselOptionFadeMax and iCarouselOptionFadeRange instead");
         }
         if ([_delegate respondsToSelector:@selector(carouselShouldWrap:)])
         {
-            NSLog(@"Warning: The carouselShouldWrap: delegate method is deprecated. Use carousel:valueForOption:withDefault: with iCarouselOptionWrap instead");
+            DLog(@"Warning: The carouselShouldWrap: delegate method is deprecated. Use carousel:valueForOption:withDefault: with iCarouselOptionWrap instead");
         }
         if ([_delegate respondsToSelector:@selector(carouselOffsetMultiplier:)])
         {
-            NSLog(@"Warning: The carouselOffsetMultiplier: delegate method is deprecated. Use carousel:valueForOption:withDefault: with iCarouselOptionOffsetMultiplier instead");
+            DLog(@"Warning: The carouselOffsetMultiplier: delegate method is deprecated. Use carousel:valueForOption:withDefault: with iCarouselOptionOffsetMultiplier instead");
         }
         if ([_delegate respondsToSelector:@selector(numberOfVisibleItemsInCarousel:)])
         {
-            NSLog(@"Warning: The numberOfVisibleItemsInCarousel: dataSource method is deprecated. This value is now set automatically, but if you need to override it, use carousel:valueForOption:withDefault: with iCarouselOptionVisibleItems instead");
+            DLog(@"Warning: The numberOfVisibleItemsInCarousel: dataSource method is deprecated. This value is now set automatically, but if you need to override it, use carousel:valueForOption:withDefault: with iCarouselOptionVisibleItems instead");
         }
         if ([_delegate respondsToSelector:@selector(carouselCurrentItemIndexUpdated:)])
         {
-            NSLog(@"Warning: The carouselCurrentItemIndexUpdated: delegate method is deprecated. Use carouselCurrentItemIndexDidChange: instead");
+            DLog(@"Warning: The carouselCurrentItemIndexUpdated: delegate method is deprecated. Use carouselCurrentItemIndexDidChange: instead");
         }
 
     }
@@ -995,13 +993,17 @@ NSComparisonResult compareViewDepth(UIView *view1, UIView *view2, iCarousel *sel
     {
         _itemWidth = [_delegate carouselItemWidth:self];
     }
+    
     else if (_numberOfItems > 0)
     {
+        
         if ([_itemViews count] == 0)
         {
             [self loadViewAtIndex:0];
         }
+         
     }
+    
     else if (_numberOfPlaceholders > 0)
     {
         if ([_itemViews count] == 0)
@@ -1009,6 +1011,7 @@ NSComparisonResult compareViewDepth(UIView *view1, UIView *view2, iCarousel *sel
             [self loadViewAtIndex:-1];
         }
     }
+     
 }
 
 - (void)updateNumberOfVisibleItems
@@ -1119,11 +1122,13 @@ NSComparisonResult compareViewDepth(UIView *view1, UIView *view2, iCarousel *sel
 
 - (void)layOutItemViews
 {
+    
     //bail out if not set up yet
     if (!_dataSource || !_contentView)
     {
         return;
     }
+    
 
     //update wrap
     switch (_type)
@@ -1144,8 +1149,9 @@ NSComparisonResult compareViewDepth(UIView *view1, UIView *view2, iCarousel *sel
             break;
         }
     }
+   
     _wrapEnabled = !![self valueForOption:iCarouselOptionWrap withDefault:_wrapEnabled];
-    
+     
     //no placeholders on wrapped carousels
     _numberOfPlaceholdersToShow = _wrapEnabled? 0: _numberOfPlaceholders;
     
@@ -1190,6 +1196,7 @@ NSComparisonResult compareViewDepth(UIView *view1, UIView *view2, iCarousel *sel
     
     //update views
     [self didScroll];
+    
 }
 
 
@@ -1238,17 +1245,21 @@ NSComparisonResult compareViewDepth(UIView *view1, UIView *view2, iCarousel *sel
 
 - (UIView *)loadViewAtIndex:(NSInteger)index withContainerView:(UIView *)containerView
 {
+    
     [self disableAnimation];
     
     UIView *view = nil;
+    
     if (index < 0)
     {
         view = [_dataSource carousel:self placeholderViewAtIndex:(int)ceilf((CGFloat)_numberOfPlaceholdersToShow/2.0f) + index reusingView:[self dequeuePlaceholderView]];
     }
+    
     else if (index >= _numberOfItems)
     {
         view = [_dataSource carousel:self placeholderViewAtIndex:_numberOfPlaceholdersToShow/2.0f + index - _numberOfItems reusingView:[self dequeuePlaceholderView]];
     }
+    
     else
     {
         view = [_dataSource carousel:self viewForItemAtIndex:index reusingView:[self dequeueItemView]];
@@ -1409,7 +1420,6 @@ NSComparisonResult compareViewDepth(UIView *view1, UIView *view2, iCarousel *sel
         [self scrollToItemAtIndex:0 animated:(_numberOfPlaceholders > 0)];
     }
 }
-
 
 #pragma mark -
 #pragma mark Scrolling

@@ -163,7 +163,6 @@ iCarouselOption;
     CGFloat _offsetMultiplier;
     CGFloat _startVelocity;
     id __unsafe_unretained _timer;
-    BOOL _decelerating;
     BOOL _scrollEnabled;
     CGFloat _decelerationRate;
     BOOL _bounces;
@@ -177,7 +176,6 @@ iCarouselOption;
     CGFloat _previousTranslation;
 	BOOL _centerItemWhenSelected;
 	BOOL _wrapEnabled;
-	BOOL _dragging;
     BOOL _didDrag;
     CGFloat _scrollSpeed;
     CGFloat _bounceDistance;
@@ -222,6 +220,8 @@ iCarouselOption;
 @property (nonatomic, assign) BOOL useDisplayLink;
 @property (nonatomic, assign) BOOL ignorePerpendicularSwipes;
 @property (nonatomic, assign) BOOL centerItemWhenSelected;
+@property (nonatomic, assign) BOOL dragging;
+@property (nonatomic, assign) BOOL decelerating;
 
 - (void)scrollByOffset:(CGFloat)offset duration:(NSTimeInterval)duration;
 - (void)scrollToOffset:(CGFloat)offset duration:(NSTimeInterval)duration;
@@ -239,7 +239,6 @@ iCarouselOption;
 - (void)reloadItemAtIndex:(NSInteger)index animated:(BOOL)animated;
 
 - (void)reloadData;
-
 @end
 
 
